@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SomiTech DMS - Enterprise Document Management</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .notification-badge {
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            background: rgba(79, 70, 229, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .notification-badge:hover {
+            background: rgba(79, 70, 229, 0.2);
+            transform: scale(1.1);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        /* Search Section */
+        .search-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background: #3730a3;
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .search-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .filter-chip {
+            background: #f3f4f6;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .filter-chip:hover, .filter-chip.active {
+            background: #4f46e5;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Upload Section */
+        .upload-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .upload-area {
+            border: 3px dashed #d1d5db;
+            border-radius: 15px;
+            padding: 3rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-area:hover {
+            border-color: #4f46e5;
+            background: rgba(79, 70, 229, 0.05);
+            transform: scale(1.02);
+        }
+        
+        .upload-area.dragover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-text {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-subtext {
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        /* Documents Grid */
+        .documents-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .document-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: #4f46e5;
+        }
+        
+        .document-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .document-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .document-info {
+            flex: 1;
+        }
+        
+        .document-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+        
+        .document-meta {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .document-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .action-btn {
+            background: #f3f4f6;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-btn:hover {
+            background: #4f46e5;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .action-btn.download {
+            background: #10b981;
+            color: white;
+        }
+        
+        .action-btn.download:hover {
+            background: #059669;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4f46e5, #10b981);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            border-left: 4px solid #10b981;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .search-section, .upload-section, .documents-section {
+                padding: 1.5rem;
+                border-radius: 15px;
+            }
+            
+            .documents-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i data-lucide="folder-open"></i>
+                    <span>SomiTech DMS</span>
+                </div>
+                <div class="user-menu">
+                    <div class="notification-badge" onclick="showNotification('You have 3 new document approvals pending')">
+                        <i data-lucide="bell"></i>
+                    </div>
+                    <div class="notification-badge">
+                        <i data-lucide="user"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section fade-in">
+                <h1 class="hero-title">Enterprise Document Management</h1>
+                <p class="hero-subtitle">Secure, scalable, and intelligent document management for modern enterprises</p>
+            </section>
+
+            <!-- Search Section -->
+            <section class="search-section fade-in">
+                <h2 class="section-title">
+                    <i data-lucide="search"></i>
+                    Search Documents
+                </h2>
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search documents by name, content, or tags..." id="searchInput">
+                    <button class="search-btn" onclick="performSearch()">
+                        <i data-lucide="search"></i>
+                    </button>
+                </div>
+                <div class="search-filters">
+                    <div class="filter-chip active" onclick="setFilter(this, 'all')">All Files</div>
+                    <div class="filter-chip" onclick="setFilter(this, 'pdf')">PDF</div>
+                    <div class="filter-chip" onclick="setFilter(this, 'doc')">Documents</div>
+                    <div class="filter-chip" onclick="setFilter(this, 'img')">Images</div>
+                    <div class="filter-chip" onclick="setFilter(this, 'xls')">Spreadsheets</div>
+                    <div class="filter-chip" onclick="setFilter(this, 'recent')">Recent</div>
+                </div>
+            </section>
+
+            <!-- Upload Section -->
+            <section class="upload-section fade-in">
+                <h2 class="section-title">
+                    <i data-lucide="upload"></i>
+                    Upload Documents
+                </h2>
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()" 
+                     ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <div class="upload-icon pulse">
+                        <i data-lucide="cloud-upload"></i>
+                    </div>
+                    <div class="upload-text">Drop files here or click to browse</div>
+                    <div class="upload-subtext">Supports PDF, DOC, PPT, XLS, CSV, TXT, PNG, JPEG (Max 10MB)</div>
+                    <input type="file" id="fileInput" class="file-input" multiple 
+                           accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg"
+                           onchange="handleFileSelect(event)">
+                </div>
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Documents Section -->
+            <section class="documents-section fade-in">
+                <h2 class="section-title">
+                    <i data-lucide="folder"></i>
+                    Recent Documents
+                </h2>
+                <div class="documents-grid" id="documentsGrid">
+                    <!-- Documents will be populated by JavaScript -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Sample documents data
+        let documents = [
+            {
+                id: 1,
+                name: "Q4 Financial Report.pdf",
+                type: "pdf",
+                size: "2.4 MB",
+                modified: "2 hours ago",
+                author: "John Smith",
+                icon: "file-text",
+                color: "#ef4444"
+            },
+            {
+                id: 2,
+                name: "Project Proposal.docx",
+                type: "doc",
+                size: "1.8 MB",
+                modified: "5 hours ago",
+                author: "Sarah Johnson",
+                icon: "file-text",
+                color: "#3b82f6"
+            },
+            {
+                id: 3,
+                name: "Marketing Presentation.pptx",
+                type: "ppt",
+                size: "5.2 MB",
+                modified: "1 day ago",
+                author: "Mike Wilson",
+                icon: "presentation",
+                color: "#f59e0b"
+            },
+            {
+                id: 4,
+                name: "Sales Data.xlsx",
+                type: "xls",
+                size: "987 KB",
+                modified: "2 days ago",
+                author: "Lisa Chen",
+                icon: "table",
+                color: "#10b981"
+            },
+            {
+                id: 5,
+                name: "Team Photo.jpg",
+                type: "img",
+                size: "3.1 MB",
+                modified: "3 days ago",
+                author: "David Brown",
+                icon: "image",
+                color: "#8b5cf6"
+            },
+            {
+                id: 6,
+                name: "Meeting Notes.txt",
+                type: "txt",
+                size: "45 KB",
+                modified: "1 week ago",
+                author: "Emma Davis",
+                icon: "file-text",
+                color: "#6b7280"
+            }
+        ];
+
+        let filteredDocuments = [...documents];
+        let currentFilter = 'all';
+
+        function renderDocuments() {
+            const grid = document.getElementById('documentsGrid');
+            grid.innerHTML = '';
+
+            filteredDocuments.forEach(doc => {
+                const card = document.createElement('div');
+                card.className = 'document-card';
+                card.innerHTML = `
+                    <div class="document-header">
+                        <div class="document-icon" style="background: ${doc.color}">
+                            <i data-lucide="${doc.icon}"></i>
+                        </div>
+                        <div class="document-info">
+                            <div class="document-name">${doc.name}</div>
+                            <div class="document-meta">${doc.size} • ${doc.modified}</div>
+                        </div>
+                    </div>
+                    <div class="document-meta">By ${doc.author}</div>
+                    <div class="document-actions">
+                        <button class="action-btn" onclick="previewDocument(${doc.id})" title="Preview">
+                            <i data-lucide="eye"></i>
+                        </button>
+                        <button class="action-btn download" onclick="downloadDocument(${doc.id})" title="Download">
+                            <i data-lucide="download"></i>
+                        </button>
+                        <button class="action-btn" onclick="shareDocument(${doc.id})" title="Share">
+                            <i data-lucide="share-2"></i>
+                        </button>
+                        <button class="action-btn" onclick="deleteDocument(${doc.id})" title="Delete">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Re-initialize Lucide icons for new elements
+            lucide.createIcons();
+        }
+
+        function setFilter(element, filter) {
+            // Update active filter
+            document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+            element.classList.add('active');
+            currentFilter = filter;
+
+            // Filter documents
+            if (filter === 'all') {
+                filteredDocuments = [...documents];
+            } else if (filter === 'recent') {
+                filteredDocuments = documents.filter(doc => 
+                    doc.modified.includes('hour') || doc.modified.includes('day')
+                );
+            } else {
+                filteredDocuments = documents.filter(doc => doc.type === filter);
+            }
+
+            renderDocuments();
+            showNotification(`Showing ${filteredDocuments.length} documents`);
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if (!query) {
+                filteredDocuments = [...documents];
+            } else {
+                filteredDocuments = documents.filter(doc => 
+                    doc.name.toLowerCase().includes(query) ||
+                    doc.author.toLowerCase().includes(query) ||
+                    doc.type.toLowerCase().includes(query)
+                );
+            }
+            renderDocuments();
+            showNotification(`Found ${filteredDocuments.length} documents matching "${query}"`);
+        }
+
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            uploadFiles(files);
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const uploadArea = event.target.closest('.upload-area');
+            uploadArea.classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            uploadFiles(files);
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const uploadArea = event.target.closest('.upload-area');
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const uploadArea = event.target.closest('.upload-area');
+            uploadArea.classList.remove('dragover');
+        }
+
+        function uploadFiles(files) {
+            const validTypes = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'csv', 'txt', 'png', 'jpg', 'jpeg'];
+            const maxSize = 10 * 1024 * 1024; // 10MB
+
+            for (let file of files) {
+                const extension = file.name.split('.').pop().toLowerCase();
+                
+                if (!validTypes.includes(extension)) {
+                    showNotification(`${file.name}: Unsupported file type`, 'error');
+                    continue;
+                }
+
+                if (file.size > maxSize) {
+                    showNotification(`${file.name}: File too large (max 10MB)`, 'error');
+                    continue;
+                }
+
+                // Simulate upload
+                simulateUpload(file);
+            }
+        }
+
+        function simulateUpload(file) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            
+            progressContainer.style.display = 'block';
+            progressFill.style.width = '0%';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // Add to documents list
+                    const newDoc = {
+                        id: documents.length + 1,
+                        name: file.name,
+                        type: getDocType(file.name),
+                        size: formatFileSize(file.size),
+                        modified: 'Just now',
+                        author: 'You',
+                        icon: getDocIcon(file.name),
+                        color: getDocColor(file.name)
+                    };
+                    
+                    documents.unshift(newDoc);
+                    if (currentFilter === 'all' || currentFilter === getDocType(file.name)) {
+                        filteredDocuments.unshift(newDoc);
+                    }
+                    
+                    renderDocuments();
+                    showNotification(`${file.name} uploaded successfully!`);
+                    
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                    }, 1000);
+                }
+                progressFill.style.width = progress + '%';
+            }, 100);
+        }
+
+        function getDocType(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (['jpg', 'jpeg', 'png'].includes(ext)) return 'img';
+            if (['doc', 'docx'].includes(ext)) return 'doc';
+            if (['ppt', 'pptx'].includes(ext)) return 'ppt';
+            if (['xls', 'xlsx'].includes(ext)) return 'xls';
+            return ext;
+        }
+
+        function getDocIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (['jpg', 'jpeg', 'png'].includes(ext)) return 'image';
+            if (['ppt', 'pptx'].includes(ext)) return 'presentation';
+            if (['xls', 'xlsx'].includes(ext)) return 'table';
+            return 'file-text';
+        }
+
+        function getDocColor(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const colors = {
+                pdf: '#ef4444',
+                doc: '#3b82f6', docx: '#3b82f6',
+                ppt: '#f59e0b', pptx: '#f59e0b',
+                xls: '#10b981', xlsx: '#10b981',
+                csv: '#10b981',
+                txt: '#6b7280',
+                jpg: '#8b5cf6', jpeg: '#8b5cf6', png: '#8b5cf6'
+            };
+            return colors[ext] || '#6b7280';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function downloadDocument(id) {
+            const doc = documents.find(d => d.id === id);
+            showNotification(`Downloading ${doc.name}...`);
+            
+            // Simulate download
+            setTimeout(() => {
+                showNotification(`${doc.name} downloaded successfully!`);
+            }, 1500);
+        }
+
+        function previewDocument(id) {
+            const doc = documents.find(d => d.id === id);
+            showNotification(`Opening preview for ${doc.name}...`);
+        }
+
+        function shareDocument(id) {
+            const doc = documents.find(d => d.id === id);
+            showNotification(`Share link copied for ${doc.name}!`);
+        }
+
+        function deleteDocument(id) {
+            if (confirm('Are you sure you want to delete this document?')) {
+                documents = documents.filter(d => d.id !== id);
+                filteredDocuments = filteredDocuments.filter(d => d.id !== id);
+                renderDocuments();
+                showNotification('Document deleted successfully!');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="${type === 'error' ? 'alert-circle' : 'check-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            lucide.createIcons();
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // Initialize search functionality
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Initialize the page
+        renderDocuments();
+
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.document-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('fade-in');
+            });
+        });
+    </script>
+</body>
+</html>
